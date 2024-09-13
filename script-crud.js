@@ -1,0 +1,1 @@
+const ElementoBotaoAdicionarTarefa = document.getElementById("start-pause");
