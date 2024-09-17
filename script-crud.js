@@ -14,5 +14,5 @@ ElementoFormularioAdicionarTarefa.addEventListener("submit", (pEvento) => {
         descricao: lElementoCampoTarefa.value
     }
     Tarefas.push(lTarefa);
-    localStorage.setItem("tarefas", Tarefas);
+    localStorage.setItem("tarefas", JSON.stringify(Tarefas));
 });
