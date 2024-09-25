@@ -3,7 +3,7 @@ const ElementosBotoesPomodoro = document.querySelectorAll(".app__card-button");
 const Musica = new Audio("./sons/luna-rise-part-one.mp3");
 Musica.loop = true;
 const ElementoTocarMusica = document.getElementById("alternar-musica");
-let TempoDecorridoEmSegundos = 1500;
+let TempoDecorridoEmSegundos = 30//1500;
 const ElementoBotaoComecarOuParar = document.getElementById("start-pause");
 let Temporizador = null;
 
@@ -60,11 +60,11 @@ function ObterHTMLDoTituloPeloContexto(pContexto){
 }
 
 function AjustarTemporizadorPeloContexto(pContexto){
-    TempoDecorridoEmSegundos = 1500
+    TempoDecorridoEmSegundos = 30//1500
     if (pContexto === "descanso-curto")
-        TempoDecorridoEmSegundos = 300
+        TempoDecorridoEmSegundos = 5//300
     else if (pContexto === "descanso-longo")
-        TempoDecorridoEmSegundos = 900;
+        TempoDecorridoEmSegundos = 15//900;
 }
 
 ElementoBotaoComecarOuParar.addEventListener("click", IniciarOuPausarTemporizador);
@@ -92,6 +92,11 @@ const ContagemRegressiva = () => {
     if (TempoDecorridoEmSegundos <= 0){
         ZerarTemporizador();
         TocarSomDeAlertaDeFimDoTemporizador();
+        const lFocoAtivo = ElementoHTML.getAttribute("data-contexto") == "foco";
+        if (lFocoAtivo){
+            const lEventoAoFinalizarFoco = new CustomEvent("AoFinalizarFoco");
+            document.dispatchEvent(lEventoAoFinalizarFoco);
+        }
         return   
     }
     TempoDecorridoEmSegundos -= 1;
