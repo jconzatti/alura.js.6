@@ -7,6 +7,7 @@ const Tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
 Tarefas.forEach(lTarefa => {adicionarTarefaNaLista(lTarefa)});
 
 let TarefaSelecionada = null;
+let ElementoItemTarefaSelecionada = null;
 
 function criarElementoTarefa(pTarefa){
     const lItemDaListaDeTarefas = document.createElement("li");
@@ -38,7 +39,15 @@ function criarElementoTarefa(pTarefa){
     lItemDaListaDeTarefas.appendChild(lDescricaoDaTarefa);
     lItemDaListaDeTarefas.appendChild(lBotaoEditarTarefa);
 
-    lItemDaListaDeTarefas.onclick = () => {
+    lItemDaListaDeTarefas.onclick = (pEvento) => {
+        const lCliqueNoBotaoEditarTarefa = pEvento.target.classList.contains("app_button-edit") || pEvento.target.parentElement.classList.contains("app_button-edit");
+        if (lCliqueNoBotaoEditarTarefa){
+            return
+        }
+        const lTarefaFinalizada = lItemDaListaDeTarefas.classList.contains("app__section-task-list-item-complete");
+        if (lTarefaFinalizada){
+            return
+        }
         const lElementoTarefaEmAndamento = document.querySelector(".app__section-active-task-description");
         document.querySelectorAll(".app__section-task-list-item-active").forEach(lItemDeTarefa => {
             lItemDeTarefa.classList.remove("app__section-task-list-item-active");    
@@ -46,9 +55,11 @@ function criarElementoTarefa(pTarefa){
         if (TarefaSelecionada == pTarefa){
             lElementoTarefaEmAndamento.textContent = "";
             TarefaSelecionada = null;
+            ElementoItemTarefaSelecionada = null;
             return
         }
         TarefaSelecionada = pTarefa;
+        ElementoItemTarefaSelecionada = lItemDaListaDeTarefas;
         lElementoTarefaEmAndamento.textContent = pTarefa.descricao;
         lItemDaListaDeTarefas.classList.add("app__section-task-list-item-active");
     };
@@ -87,4 +98,12 @@ ElementoBotaoDoFormularioParaCancelarTarefa.addEventListener("click", (pEvento) 
     const lElementoCampoTarefa = document.querySelector(".app__form-textarea");
     lElementoCampoTarefa.value = "";
     ElementoFormularioAdicionarTarefa.classList.add("hidden");
+});
+
+document.addEventListener("AoFinalizarFoco", () => {
+    if (TarefaSelecionada && ElementoItemTarefaSelecionada){
+        ElementoItemTarefaSelecionada.classList.remove("app__section-task-list-item-active");
+        ElementoItemTarefaSelecionada.classList.add("app__section-task-list-item-complete");
+        ElementoItemTarefaSelecionada.querySelector("button").setAttribute("disabled", "disabled");
+    }
 });
