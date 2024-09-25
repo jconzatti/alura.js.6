@@ -1,6 +1,7 @@
 const ElementoBotaoAdicionarTarefa = document.querySelector(".app__button--add-task");
 const ElementoFormularioAdicionarTarefa = document.querySelector(".app__form-add-task");
 const ElementoListaDeTarefas = document.querySelector(".app__section-task-list");
+const ElementoBotaoDoFormularioParaCancelarTarefa = document.querySelector(".app__form-footer__button--cancel");
 
 const Tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
 Tarefas.forEach(lTarefa => {adicionarTarefaNaLista(lTarefa)});
@@ -62,3 +63,10 @@ ElementoFormularioAdicionarTarefa.addEventListener("submit", (pEvento) => {
 function atualizarTarefas(){
     localStorage.setItem("tarefas", JSON.stringify(Tarefas));
 }
+
+ElementoBotaoDoFormularioParaCancelarTarefa.addEventListener("click", (pEvento) => {
+    pEvento.preventDefault();
+    const lElementoCampoTarefa = document.querySelector(".app__form-textarea");
+    lElementoCampoTarefa.value = "";
+    ElementoFormularioAdicionarTarefa.classList.add("hidden");
+});
