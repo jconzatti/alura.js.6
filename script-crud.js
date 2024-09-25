@@ -6,6 +6,8 @@ const ElementoBotaoDoFormularioParaCancelarTarefa = document.querySelector(".app
 const Tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
 Tarefas.forEach(lTarefa => {adicionarTarefaNaLista(lTarefa)});
 
+let TarefaSelecionada = null;
+
 function criarElementoTarefa(pTarefa){
     const lItemDaListaDeTarefas = document.createElement("li");
     lItemDaListaDeTarefas.classList.add("app__section-task-list-item");
@@ -35,6 +37,22 @@ function criarElementoTarefa(pTarefa){
     lItemDaListaDeTarefas.appendChild(lImagemDoItemDaListaDeTarefas);
     lItemDaListaDeTarefas.appendChild(lDescricaoDaTarefa);
     lItemDaListaDeTarefas.appendChild(lBotaoEditarTarefa);
+
+    lItemDaListaDeTarefas.onclick = () => {
+        const lElementoTarefaEmAndamento = document.querySelector(".app__section-active-task-description");
+        document.querySelectorAll(".app__section-task-list-item-active").forEach(lItemDeTarefa => {
+            lItemDeTarefa.classList.remove("app__section-task-list-item-active");    
+        })
+        if (TarefaSelecionada == pTarefa){
+            lElementoTarefaEmAndamento.textContent = "";
+            TarefaSelecionada = null;
+            return
+        }
+        TarefaSelecionada = pTarefa;
+        lElementoTarefaEmAndamento.textContent = pTarefa.descricao;
+        lItemDaListaDeTarefas.classList.add("app__section-task-list-item-active");
+    };
+
     return lItemDaListaDeTarefas;
 }
 
