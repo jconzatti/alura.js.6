@@ -3,10 +3,9 @@ const ElementoFormularioAdicionarTarefa = document.querySelector(".app__form-add
 const ElementoListaDeTarefas = document.querySelector(".app__section-task-list");
 
 const Tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
-
 Tarefas.forEach(lTarefa => {adicionarTarefaNaLista(lTarefa)});
 
-function criarElementoTarefa(pDescricaoDaTarefa){
+function criarElementoTarefa(pTarefa){
     const lItemDaListaDeTarefas = document.createElement("li");
     lItemDaListaDeTarefas.classList.add("app__section-task-list-item");
     const lImagemDoItemDaListaDeTarefas = document.createElement("svg");
@@ -18,10 +17,20 @@ function criarElementoTarefa(pDescricaoDaTarefa){
     `;
     const lDescricaoDaTarefa =  document.createElement("p");
     lDescricaoDaTarefa.classList.add("app__section-task-list-item-description");
-    lDescricaoDaTarefa.textContent = pDescricaoDaTarefa;
+    lDescricaoDaTarefa.textContent = pTarefa.descricao;
     const lBotaoEditarTarefa = document.createElement("button");
     lBotaoEditarTarefa.classList.add("app_button-edit");
     lBotaoEditarTarefa.innerHTML = `<img src="/imagens/edit.png">`;
+    lBotaoEditarTarefa.onclick = () => {
+        //debugger; //descomente para debugar o código =)
+        const lNovaDescricaoDaTarefa = prompt("Qual é a nova descrição da tarefa?");
+        if (lNovaDescricaoDaTarefa) {
+            lDescricaoDaTarefa.textContent = lNovaDescricaoDaTarefa;
+            pTarefa.descricao = lNovaDescricaoDaTarefa;
+            atualizarTarefas();
+        }
+    };
+
     lItemDaListaDeTarefas.appendChild(lImagemDoItemDaListaDeTarefas);
     lItemDaListaDeTarefas.appendChild(lDescricaoDaTarefa);
     lItemDaListaDeTarefas.appendChild(lBotaoEditarTarefa);
@@ -29,7 +38,7 @@ function criarElementoTarefa(pDescricaoDaTarefa){
 }
 
 function adicionarTarefaNaLista(pTarefa){
-    const lItemDaListaDeTarefas = criarElementoTarefa(pTarefa.descricao);
+    const lItemDaListaDeTarefas = criarElementoTarefa(pTarefa);
     ElementoListaDeTarefas.appendChild(lItemDaListaDeTarefas);
 }
 
@@ -45,7 +54,11 @@ ElementoFormularioAdicionarTarefa.addEventListener("submit", (pEvento) => {
     }
     Tarefas.push(lTarefa);
     adicionarTarefaNaLista(lTarefa);
-    localStorage.setItem("tarefas", JSON.stringify(Tarefas));
+    atualizarTarefas();
     lElementoCampoTarefa.value = "";
     ElementoFormularioAdicionarTarefa.classList.add("hidden");
 });
+
+function atualizarTarefas(){
+    localStorage.setItem("tarefas", JSON.stringify(Tarefas));
+}
