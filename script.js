@@ -3,7 +3,7 @@ const ElementosBotoesPomodoro = document.querySelectorAll(".app__card-button");
 const Musica = new Audio("./sons/luna-rise-part-one.mp3");
 Musica.loop = true;
 const ElementoTocarMusica = document.getElementById("alternar-musica");
-let TempoDecorridoEmSegundos = 30//1500;
+let TempoRestanteEmSegundos = 30//1500;
 const ElementoBotaoComecarOuParar = document.getElementById("start-pause");
 let Temporizador = null;
 
@@ -47,7 +47,7 @@ function AlterarContexto(pContexto){
     lElementoImagem.src = `/imagens/${pContexto}.png`;
     ElementoHTML.setAttribute("data-contexto", pContexto);
     ZerarTemporizador();
-    AjustarTemporizadorPeloContexto(pContexto);
+    AjustarTempoRestantePeloContexto(pContexto);
     ExibirContagemRegressiva();
 }
 
@@ -59,12 +59,12 @@ function ObterHTMLDoTituloPeloContexto(pContexto){
     return `Otimize sua produtividade,<br><strong class="app__title-strong">mergulhe no que importa</strong>`; 
 }
 
-function AjustarTemporizadorPeloContexto(pContexto){
-    TempoDecorridoEmSegundos = 30//1500
+function AjustarTempoRestantePeloContexto(pContexto){
+    TempoRestanteEmSegundos = 30//1500
     if (pContexto === "descanso-curto")
-        TempoDecorridoEmSegundos = 5//300
+        TempoRestanteEmSegundos = 5//300
     else if (pContexto === "descanso-longo")
-        TempoDecorridoEmSegundos = 15//900;
+        TempoRestanteEmSegundos = 15//900;
 }
 
 ElementoBotaoComecarOuParar.addEventListener("click", IniciarOuPausarTemporizador);
@@ -89,17 +89,19 @@ function ZerarTemporizador(){
 }
 
 const ContagemRegressiva = () => {
-    if (TempoDecorridoEmSegundos <= 0){
+    if (TempoRestanteEmSegundos > 0){
+        TempoRestanteEmSegundos -= 1;
+    } else {
         ZerarTemporizador();
         TocarSomDeAlertaDeFimDoTemporizador();
-        const lFocoAtivo = ElementoHTML.getAttribute("data-contexto") == "foco";
+        const lContexto = ElementoHTML.getAttribute("data-contexto");
+        const lFocoAtivo = lContexto == "foco";
         if (lFocoAtivo){
             const lEventoAoFinalizarFoco = new CustomEvent("AoFinalizarFoco");
             document.dispatchEvent(lEventoAoFinalizarFoco);
         }
-        return   
+        AjustarTempoRestantePeloContexto(lContexto);
     }
-    TempoDecorridoEmSegundos -= 1;
     ExibirContagemRegressiva();
 }
 
@@ -133,7 +135,7 @@ function AtribuirIconeNoBotaoComecarOuParar(pArquivoDeImagemDoIcone){
 
 function ExibirContagemRegressiva(){
     const lElementoContagemRegressiva = document.getElementById("timer");
-    const lTempoDecorridoAtual = new Date(TempoDecorridoEmSegundos * 1000);
+    const lTempoDecorridoAtual = new Date(TempoRestanteEmSegundos * 1000);
     const lTempoDecorridoAtualFormatado = lTempoDecorridoAtual.toLocaleTimeString("pt-Br", {minute: "2-digit", second: "2-digit"});
     lElementoContagemRegressiva.innerHTML = `${lTempoDecorridoAtualFormatado}`;
 }
